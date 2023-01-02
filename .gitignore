@@ -1,1 +1,4 @@
 config.py
+token-for-google.json
+token_photoslibrary_v1.pickle
+/__pycache__
