@@ -66,9 +66,7 @@ def create_instagram_image(img_url, img_saved_folder, text):
 img_url = "https://onecms-res.cloudinary.com/image/upload/s--JpcYvP-h--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:afp_watermark,w_0.1/f_auto,q_auto/v1/one-cms/core/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg?itok=srLoboOA"
 
 
-text = """
-SINGAPORE: With the Goods and Services Tax (GST) rising by 1 percentage point to 8 per cent since Jan 1, some shops have accordingly updated their prices to reflect the increase. CNA visited various stores to check the price difference on a random selection of items before and after the GST hike kicked in.While some stores increased their prices, no signs were put up informing customers of the change. Others displayed notices about the transition to the new prices. 
-"""
+text = "Happy flow " * 40
 create_instagram_image(img_url, 'images', text)
 
 
