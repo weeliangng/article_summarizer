@@ -1,5 +1,5 @@
 import requests
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw, ImageOps, ImageFont
 import textwrap3
 
 # download image using url from mongodb into images
@@ -18,7 +18,7 @@ def download_image(img_url, img_saved_folder):
         handler.write(img_data)
     return img_file_path
 
-def pad_image(img_file_path):
+def apply_transparency(img_file_path):
     tint_colour = (255,255,255)
     transparency = 0.65
     opacity = int(255 * transparency)
@@ -30,24 +30,45 @@ def pad_image(img_file_path):
     draw.rectangle( [(0,0), img.size] , fill=tint_colour+(opacity,))
     img = Image.alpha_composite(img, overlay)
     img = img.convert("RGB") # Remove alpha for saving in jpg format.
+    img.save(img_file_path)
+
+def pad_image(img_file_path):
+    with Image.open(img_file_path) as img: 
+        img = img.convert("RGBA")
     longest_side = max(img.size)
     img = ImageOps.pad(img, (longest_side, longest_side), color='grey')
+    img = img.convert("RGB")
     img.save(img_file_path)
 
 def add_text(img_file_path, text):
-    lines = textwrap3.wrap(text, width=40)
-    y_text = h
+    font_path = '/fonts/arialbd.ttf'
+    font = ImageFont.truetype(font_path, 24, encoding='unic')
+    
+    y_text = 10
     with Image.open(img_file_path) as img: 
         img = img.convert("RGBA")
-
+    w, h = img.size
+    lines = textwrap3.wrap(text, width=int(w/ font.getsize('X')[0] ))
     draw = ImageDraw.Draw(img)
     for line in lines:
         width, height = font.getsize(line)
-        draw.text(((w - width) / 2, y_text), line, font=font, fill=FOREGROUND)
+        draw.text(((w - width) / 2, y_text), line, font= font , fill = (0, 0 , 0))
         y_text += height
-    img.show()
+    img = img.convert("RGB")
+    img.save(img_file_path)
 
+def create_instagram_image(img_url, img_saved_folder, text):
+    img_file_path = download_image(img_url, img_saved_folder)
+    apply_transparency(img_file_path)
+    add_text(img_file_path, text)
+    pad_image(img_file_path)
+    return img_file_path
 img_url = "https://onecms-res.cloudinary.com/image/upload/s--JpcYvP-h--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:afp_watermark,w_0.1/f_auto,q_auto/v1/one-cms/core/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg?itok=srLoboOA"
 
-#img_file_path = download_image(img_url, "images")
-#pad_image(img_file_path)
+
+text = """
+SINGAPORE: With the Goods and Services Tax (GST) rising by 1 percentage point to 8 per cent since Jan 1, some shops have accordingly updated their prices to reflect the increase. CNA visited various stores to check the price difference on a random selection of items before and after the GST hike kicked in.While some stores increased their prices, no signs were put up informing customers of the change. Others displayed notices about the transition to the new prices. 
+"""
+create_instagram_image(img_url, 'images', text)
+
+
