@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from newspaper import Article
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import scraped_database
 
@@ -39,27 +39,40 @@ def get_article_links(site):
     r = requests.get(site)
     soup = BeautifulSoup(r.content, 'html.parser')
     articles_a = soup.find_all('a', class_=re.compile('heading'))
-    filtered_articles_a = [article_a for article_a in articles_a if ('interactives' not in str(article_a) and 'watch' not in str(article_a)) ]
+    #exclude watch and interactives articles
+    filtered_articles_a = [article_a for article_a in articles_a if ('interactives' not in str(article_a) and 'watch' not in str(article_a)) ] 
     return list(filtered_articles_a)
 
-def start_scraping(site):
+def start_scraping(site, timedelta_hours = 24):
     scraped_doc_list = []
     articles_a = get_article_links(site)
     for article_a in articles_a:
         article_url = "{}{}".format(site, article_a["href"])
         article_title, article_published_datetime, article_text, article_img = scrape_article(article_url)
-        scraped_doc = {
-            'article_url': article_url,
-            'article_title': article_title,
-            'article_published_datetime': article_published_datetime,
-            'article_text': article_text,
-            'article_image': article_img
-        }
-        scraped_doc_list.append(scraped_doc)
+        if article_published_datetime > datetime.now() - timedelta(hours=timedelta_hours):
+            scraped_doc = {
+                'article_url': article_url,
+                'article_title': article_title,
+                'article_published_datetime': article_published_datetime,
+                'article_text': article_text,
+                'article_image': article_img
+            }
+            scraped_doc_list.append(scraped_doc)
     return scraped_doc_list
 
+def remove_existing_documents(doc_list, existing_articles):
+    new_doc_list = []
+    for doc in doc_list:
+        if doc['article_url'] not in existing_articles:
+            new_doc_list.append(doc)
+    return new_doc_list
+
 site = 'https://www.channelnewsasia.com'
-scraped_doc_list = start_scraping(site)
+scraped_doc_list = start_scraping(site, 24)
+existing_articles = scraped_database.get_existing_documents_url('cna_articles')
+print(len(scraped_doc_list))
+scraped_doc_list = remove_existing_documents(scraped_doc_list, existing_articles)
+print(len(scraped_doc_list))
 scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
 
 
