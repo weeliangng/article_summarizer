@@ -1,13 +1,28 @@
 from create_instagram_image import create_instagram_image
 from upload_freeimage import upload_freeimage
 from insta import post_article_summary
+from datetime import datetime, time
+import scraped_database
+import transformerModel
 
 
-img_url = "https://onecms-res.cloudinary.com/image/upload/s--JpcYvP-h--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:afp_watermark,w_0.1/f_auto,q_auto/v1/one-cms/core/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg?itok=srLoboOA"
-text = "Happy flow " * 40
+date = datetime(2023, 1, 21)
+start_time = time.min
+end_time = time.max
 
-image_path = create_instagram_image(img_url, 'images', text)
+article_startdatetime = datetime.combine(date, start_time)
+article_enddatetime = datetime.combine(date, end_time)
 
+documents = scraped_database.get_documents('cna_articles', article_startdatetime, article_enddatetime)
+
+document = documents[0]
+
+
+img_url = document['article_image']
+summarized_text = transformerModel.sliding_window_summarization(document['article_text'])
+
+image_path = create_instagram_image(img_url, 'images', summarized_text)
 image_url = upload_freeimage(image_path)
 
-post_article_summary(image_url)
+print(image_url)
+#post_article_summary(image_url)

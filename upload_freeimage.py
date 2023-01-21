@@ -19,4 +19,4 @@ def upload_freeimage(image_path):
 
 image_path = 'images/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg'
 
-print(upload_freeimage(image_path))
+#print(upload_freeimage(image_path))

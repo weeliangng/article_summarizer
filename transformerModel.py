@@ -1,5 +1,4 @@
 from transformers import pipeline, AutoTokenizer
-
 from nltk.tokenize import sent_tokenize
 import time
 
@@ -8,7 +7,9 @@ import time
 import nltk
 nltk.download('punkt')
 
-def sliding_window_summarization(text, summarizer, window_size = 17, max_len =512):
+def sliding_window_summarization(text, model='google/pegasus-xsum' , window_size = 17, max_len =512):
+    start_time = time.time()
+    summarizer = pipeline('summarization', model)
     summaries = []
     sentences = sent_tokenize(text)
     tokenizer = AutoTokenizer.from_pretrained('google/pegasus-xsum')
@@ -19,8 +20,8 @@ def sliding_window_summarization(text, summarizer, window_size = 17, max_len =51
         #print(window_text)
         tokenized_window = tokenizer.tokenize(window_text)
         tokenized_window_length = len(tokenized_window)
-        min_text_length = int (tokenized_window_length * 0.20)
-        max_text_length = int (tokenized_window_length * 0.25)
+        min_text_length = int (tokenized_window_length * 0.40)
+        max_text_length = int (tokenized_window_length * 0.50)
         if tokenized_window_length > max_len:
             # truncate the window_text
             window_text = tokenizer.decode(tokenized_window[:max_len])
@@ -28,8 +29,12 @@ def sliding_window_summarization(text, summarizer, window_size = 17, max_len =51
         #print(summary)
         summaries.append(summary[0]['summary_text'])
     #print(summaries)
+    end_time = time.time()
+    time_taken = end_time - start_time
+    print("Time taken: {:.2f} seconds".format(time_taken))
     return " ".join(summaries)
 
+    
 
 
 text =  """
@@ -59,17 +64,3 @@ On a recent social media post, IRR said: "We ask that people don’t pass us any
 The spokesperson added: "One man’s trash is NOT another man’s treasure."
 """
 #print(summarizer(text, min_length= 360, max_length = 500))
-window_size = 17
-
-start_time = time.time()
-
-summarizer = pipeline('summarization', model='google/pegasus-xsum')
-summarized_text = sliding_window_summarization(text, summarizer, window_size )
-
-print(summarized_text)
-
-end_time = time.time()
-
-time_taken = end_time - start_time
-
-print("Time taken: {:.2f} seconds".format(time_taken))

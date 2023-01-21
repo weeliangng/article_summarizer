@@ -1,6 +1,6 @@
 import pymongo
 import config
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 
 
 def create_client(mongodb_user, mongodb_cluster_pass, mongodb_cluster):
@@ -17,33 +17,27 @@ def insert_many_db(scraped_data ,collection):
 #retrieve records from mongodb
 #get article text
 #article image
-def get_documents(collection, article_startdate, article_enddate):
+def get_documents(collection, article_startdatetime, article_enddatetime):
     documents = []
     client = create_client(config.mongodb_user, config.mongodb_cluster_pass, config.mongodb_cluster)
     db = client.scraped_articles
     collection = db[collection]
-    start_date = datetime.combine(article_startdate, time.min)
-    end_date = datetime.combine(article_enddate, time.max)
-    query = {'article_published_datetime' : {'$gt': start_date, '$lt': end_date} }
+    query = {'article_published_datetime' : {'$gt': article_startdatetime, '$lt': article_enddatetime} }
     projection = {'article_url': 1, 'article_published_datetime': 1 , 'article_image' : 1, 'article_title' : 1, 'article_text': 1, '_id': 0}
     cur = collection.find(query, projection)
     for doc in cur:
         documents.append(doc)
     return documents
 
-def get_existing_documents_url(collection):
-    urls = []
+def delete_documents(collection, days_ago = 30):
     client = create_client(config.mongodb_user, config.mongodb_cluster_pass, config.mongodb_cluster)
     db = client.scraped_articles
     collection = db[collection]
-    cur = collection.find({})
-    for doc in cur:
-        urls.append(doc['article_url'])
-    return urls
-
-
+    cutoff = datetime.now() - timedelta(days = days_ago)
+    collection.delete_many({'article_published_datetime' : { '$lt': cutoff}})
 
 #print(get_documents('cna_articles',date(2022,12,17),date(2022,12,19)))
 #print(get_existing_documents_url('cna_articles'))
 
 print(datetime(2022,12,19))
+#delete_documents('cna_articles', 0 )
