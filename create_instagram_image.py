@@ -1,6 +1,8 @@
 import requests
 from PIL import Image, ImageDraw, ImageOps, ImageFont
 import textwrap3
+import shutil
+from datetime import datetime
 
 # download image using url from mongodb into images
 # crop image into a square
@@ -11,11 +13,17 @@ def getImageFileName(img_url):
     return (img_url.split("/")[-1]).split("?")[0]
 
 def download_image(img_url, img_saved_folder):
-    img_data = requests.get(img_url).content
-    img_file_name = getImageFileName(img_url)
-    img_file_path = '{}/{}'.format(img_saved_folder, img_file_name)
-    with open(img_file_path, 'wb') as handler:
-        handler.write(img_data)
+    if img_url == 'no_image':
+        blank_file = 'blank.jpg'
+        now = datetime.now()
+        img_file_path = '{}/{}'.format(img_saved_folder, now.strftime("%-%m%d%H%M%S") + '.jpg')
+        shutil.copy2(blank_file, img_file_path)
+    else:
+        img_data = requests.get(img_url).content
+        img_file_name = getImageFileName(img_url)
+        img_file_path = '{}/{}'.format(img_saved_folder, img_file_name)
+        with open(img_file_path, 'wb') as handler:
+            handler.write(img_data)
     return img_file_path
 
 def apply_transparency(img_file_path):
@@ -66,7 +74,9 @@ def create_instagram_image(img_url, img_saved_folder, text):
 img_url = "https://onecms-res.cloudinary.com/image/upload/s--JpcYvP-h--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:afp_watermark,w_0.1/f_auto,q_auto/v1/one-cms/core/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg?itok=srLoboOA"
 
 
-text = "Happy flow " * 40
-create_instagram_image(img_url, 'images', text)
+#text = "Happy flow " * 40
+#create_instagram_image(img_url, 'images', text)
+
+download_image('no_image', 'images')
 
 

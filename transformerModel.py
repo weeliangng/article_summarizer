@@ -20,8 +20,8 @@ def sliding_window_summarization(text, model='google/pegasus-xsum' , window_size
         #print(window_text)
         tokenized_window = tokenizer.tokenize(window_text)
         tokenized_window_length = len(tokenized_window)
-        min_text_length = int (tokenized_window_length * 0.40)
-        max_text_length = int (tokenized_window_length * 0.50)
+        min_text_length = int (tokenized_window_length * 0.35)
+        max_text_length = int (tokenized_window_length * 0.45)
         if tokenized_window_length > max_len:
             # truncate the window_text
             window_text = tokenizer.decode(tokenized_window[:max_len])

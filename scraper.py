@@ -89,13 +89,25 @@ def remove_existing_documents(doc_list, existing_articles):
             new_doc_list.append(doc)
     return new_doc_list
 
+def remove_duplicate_documents(doc_list):
+    unique_urls = set()
+    new_doc_list = list()
+    for doc in doc_list:
+        if doc['article_url'] not in unique_urls:
+            new_doc_list.append(doc)
+            unique_urls.add(doc['article_url'])
+    return new_doc_list
+
+scraped_database.delete_documents('cna_articles', days_ago = 0)
 site = 'https://www.channelnewsasia.com'
-#scraped_doc_list = start_scraping(site, 'cna_articles', 24)
-#print(len(scraped_doc_list))
-#scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
-article_url = 'https://www.channelnewsasia.com/business/twitter-elon-musk-restore-journalists-accounts-elonjet-tracks-plane-3151996'
+scraped_doc_list = start_scraping(site, 'cna_articles', 24)
+print(len(scraped_doc_list))
+scraped_doc_list = remove_duplicate_documents(scraped_doc_list)
+print(len(scraped_doc_list))
+scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
+#article_url = 'https://www.channelnewsasia.com/business/twitter-elon-musk-restore-journalists-accounts-elonjet-tracks-plane-3151996'
 
 
-get_article_text(article_url)
+#get_article_text(article_url)
 
 
