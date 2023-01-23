@@ -2,11 +2,11 @@ import config
 import requests
 import json
 
-def post_article_summary(image_location):
+def post_article_summary(image_location, caption):
     post_url_create = 'https://graph.facebook.com/v15.0/{}/media'.format(config.instagram_id)
     create_payload = {
             'image_url' : image_location,
-            'caption' : 'test post',
+            'caption' : caption,
             'access_token' : config.instagram_access_token
 
     }

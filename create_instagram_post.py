@@ -73,10 +73,13 @@ def create_instagram_image(img_url, img_saved_folder, text):
     return img_file_path
 img_url = "https://onecms-res.cloudinary.com/image/upload/s--JpcYvP-h--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:afp_watermark,w_0.1/f_auto,q_auto/v1/one-cms/core/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg?itok=srLoboOA"
 
+def create_instagram_caption(document):
+    caption = 'Full article link: {}'.format(document['article_url'])
+    return caption
 
 #text = "Happy flow " * 40
 #create_instagram_image(img_url, 'images', text)
 
-download_image('no_image', 'images')
+#download_image('no_image', 'images')
 
 

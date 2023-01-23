@@ -1,4 +1,4 @@
-from create_instagram_image import create_instagram_image
+from create_instagram_post import create_instagram_image, create_instagram_caption
 from upload_freeimage import upload_freeimage
 from insta import post_article_summary
 from datetime import datetime, time
@@ -19,10 +19,12 @@ document = documents[0]
 print(document)
 
 img_url = document['article_image']
+caption = create_instagram_caption(document)
 summarized_text = transformerModel.sliding_window_summarization(document['article_text'])
 print(summarized_text)
 image_path = create_instagram_image(img_url, 'images', summarized_text)
+
 image_url = upload_freeimage(image_path)
 
 print(image_url)
-#post_article_summary(image_url)
+post_article_summary(image_url, caption)

@@ -55,7 +55,13 @@ def get_article_links(site):
     soup = BeautifulSoup(r.content, 'html.parser')
     articles_a = soup.find_all('a', class_=re.compile('heading'))
     #exclude watch and interactives articles
-    filtered_articles_a = [article_a for article_a in articles_a if ('interactives' not in str(article_a) and 'watch' not in str(article_a)) ] 
+    filtered_articles_a = list()
+    exclude_categories = ['interactives', 'watch', 'listen']
+    for article_a in articles_a:
+        href = article_a['href']
+        category = href.split('/')[1]
+        if category not in exclude_categories: 
+            filtered_articles_a.append(article_a) 
     return list(filtered_articles_a)
 
 def start_scraping(site, collection,  timedelta_hours = 24):
@@ -72,7 +78,8 @@ def start_scraping(site, collection,  timedelta_hours = 24):
                 'article_title': article_title,
                 'article_published_datetime': article_published_datetime,
                 'article_text': article_text,
-                'article_image': article_img
+                'article_image': article_img,
+                'posted_on_insta': 'no'
             }
             scraped_doc_list.append(scraped_doc)
     print(len(scraped_doc_list))
