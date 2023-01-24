@@ -1,18 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-from newspaper import Article
 from datetime import datetime, timedelta
 
 import scraped_database
 
 def scrape_article(article_url):
-    #print(article_url)
-    article = Article(article_url)
-    article.download()
-    article.parse()
-    article_title = article.title
     soup = get_article_soup(article_url)
+    article_title = get_article_title(soup)
     article_text = get_article_text(soup)
     article_published_datetime = get_article_published_date(soup)
     article_img = get_article_img(soup)
@@ -49,6 +44,10 @@ def get_article_text(soup):
     article_text_p = soup.select('div.text-long p')
     article_text = ' '.join([p.text for p in article_text_p])
     return article_text
+
+def get_article_title(soup):
+    article_title = soup.find('h1', class_ = re.compile('h1 h1--page-title')).text
+    return article_title.strip()
 
 def get_article_links(site):
     r = requests.get(site)
@@ -105,16 +104,12 @@ def remove_duplicate_documents(doc_list):
             unique_urls.add(doc['article_url'])
     return new_doc_list
 
-scraped_database.delete_documents('cna_articles', days_ago = 0)
+#scraped_database.delete_documents('cna_articles', days_ago = 7)
 site = 'https://www.channelnewsasia.com'
 scraped_doc_list = start_scraping(site, 'cna_articles', 24)
-print(len(scraped_doc_list))
-scraped_doc_list = remove_duplicate_documents(scraped_doc_list)
-print(len(scraped_doc_list))
-scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
-#article_url = 'https://www.channelnewsasia.com/business/twitter-elon-musk-restore-journalists-accounts-elonjet-tracks-plane-3151996'
-
-
-#get_article_text(article_url)
+#print(len(scraped_doc_list))
+#scraped_doc_list = remove_duplicate_documents(scraped_doc_list)
+#print(len(scraped_doc_list))
+#scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
 
 
