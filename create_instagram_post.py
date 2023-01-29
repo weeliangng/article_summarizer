@@ -50,7 +50,7 @@ def pad_image(img_file_path):
 
 def add_text(img_file_path, text):
     font_path = '/fonts/arialbd.ttf'
-    font = ImageFont.truetype(font_path, 22, encoding='unic')
+    font = ImageFont.truetype(font_path, 25, encoding='unic')
     
     y_text = 10
     with Image.open(img_file_path) as img: 
@@ -73,9 +73,9 @@ def create_instagram_image(img_url, img_saved_folder, text):
     return img_file_path
 img_url = "https://onecms-res.cloudinary.com/image/upload/s--JpcYvP-h--/c_fill,g_auto,h_468,w_830/fl_relative,g_south_east,l_one-cms:core:watermark:afp_watermark,w_0.1/f_auto,q_auto/v1/one-cms/core/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg?itok=srLoboOA"
 
-def create_instagram_caption(document):
-    credits = 'Summarized using Pegasus-xsum.\ntitle: PEGASUS: Pre-training with Extracted Gap-sentences for Abstractive Summarization\nAuthor:Jingqing Zhang and Yao Zhao and Mohammad Saleh and Peter J. Liu'
-    caption = '{}\nFull article link: {}\n{}'.format(document['article_title'], document['article_url'], credits)
+def create_instagram_caption(document, hashtags):
+    credits = 'Summarized using OpenAi text-davinci-003'
+    caption = '{}\nFull article link: {}\n{}\n{}'.format(document['article_title'], document['article_url'], hashtags, credits)
     return caption
 
 #text = "Happy flow " * 40

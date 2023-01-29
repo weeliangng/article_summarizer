@@ -81,9 +81,9 @@ def start_scraping(site, collection,  timedelta_hours = 24):
                 'posted_on_insta': 'no'
             }
             scraped_doc_list.append(scraped_doc)
-    print(len(scraped_doc_list))
+    #print(len(scraped_doc_list))
     existing_articles = scraped_database.get_documents(collection, article_startdatetime, article_enddatetime)
-    print(len(existing_articles))
+    #print(len(existing_articles))
     existing_articles_url = [doc['article_url'] for doc in existing_articles]
     scraped_doc_list = remove_existing_documents(scraped_doc_list, existing_articles_url)
     return scraped_doc_list
@@ -104,12 +104,12 @@ def remove_duplicate_documents(doc_list):
             unique_urls.add(doc['article_url'])
     return new_doc_list
 
-#scraped_database.delete_documents('cna_articles', days_ago = 7)
+scraped_database.delete_documents('cna_articles', days_ago = 7)
 site = 'https://www.channelnewsasia.com'
 scraped_doc_list = start_scraping(site, 'cna_articles', 24)
 #print(len(scraped_doc_list))
-#scraped_doc_list = remove_duplicate_documents(scraped_doc_list)
+scraped_doc_list = remove_duplicate_documents(scraped_doc_list)
 #print(len(scraped_doc_list))
-#scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
+scraped_database.insert_many_db(scraped_doc_list, 'cna_articles')
 
 

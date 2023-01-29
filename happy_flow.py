@@ -5,9 +5,10 @@ from datetime import datetime, time
 import scraped_database
 import transformerModel
 import scraper
+import openai_request
 
 
-date = datetime(2023, 1, 23)
+date = datetime.now()
 start_time = time.min
 end_time = time.max
 
@@ -20,11 +21,15 @@ document = documents[0]
 print(document)
 
 img_url = document['article_image']
-caption = create_instagram_caption(document)
+
+summary, hashtags = openai_request.summarize_text(document['article_text'])
+print(summary)
+print(hashtags)
+caption = create_instagram_caption(document, hashtags)
 print(caption)
-summarized_text = transformerModel.sliding_window_summarization(document['article_text'])
-print(summarized_text)
-image_path = create_instagram_image(img_url, 'images', summarized_text)
+#summary = transformerModel.sliding_window_summarization(document['article_text'])
+#print(summarized_text)
+image_path = create_instagram_image(img_url, 'images', summary)
 
 image_url = upload_freeimage(image_path)
 
