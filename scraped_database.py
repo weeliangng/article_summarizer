@@ -40,7 +40,7 @@ def get_longest_document(collection, article_startdatetime, article_enddatetime)
     cur = collection.aggregate([
     {"$match": query},
     {"$project": {'article_url': 1, 'article_published_datetime': 1 , 'article_image' : 1, 'article_title' : 1, 'article_text': 1, '_id': 1, 'posted_on_insta': 1, "tokens": {"$size": { "$split": ["$article_text", " "] }}}},
-    {"$match": {'tokens':{'$lt': 3500}}},
+    {"$match": {'tokens':{'$lt': 3550, '$gt': 2500}}},
     {"$sort": {"tokens": -1}},
     {"$limit": 1}
     ])

@@ -1,14 +1,14 @@
 from create_instagram_post import create_instagram_image, create_instagram_caption
 from upload_freeimage import upload_freeimage
 from insta import post_article_summary
-from datetime import datetime, time
+from datetime import datetime, time, date
 import scraped_database
 import transformerModel
 import scraper
 import openai_request
 
 
-date = datetime.now()
+date = date(2023,1,30)#datetime.now()
 start_time = time.min
 end_time = time.max
 
