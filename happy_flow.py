@@ -8,7 +8,7 @@ import scraper
 import openai_request
 
 
-date = date(2023,1,30)#datetime.now()
+date = datetime.now()#date(2023,2,1)#
 start_time = time.min
 end_time = time.max
 

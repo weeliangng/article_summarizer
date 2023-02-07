@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import scraped_database
 
 def scrape_article(article_url):
+    print("Scraping {}".format(article_url))
     soup = get_article_soup(article_url)
     article_title = get_article_title(soup)
     article_text = get_article_text(soup)
@@ -55,7 +56,7 @@ def get_article_links(site):
     articles_a = soup.find_all('a', class_=re.compile('heading'))
     #exclude watch and interactives articles
     filtered_articles_a = list()
-    exclude_categories = ['interactives', 'watch', 'listen']
+    exclude_categories = ['interactives', 'watch', 'listen', 'brandstudio', 'high-time','brand-studio']
     for article_a in articles_a:
         href = article_a['href']
         category = href.split('/')[1]

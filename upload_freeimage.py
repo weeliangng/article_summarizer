@@ -14,7 +14,7 @@ def upload_freeimage(image_path):
     }
 
     response = requests.post(requests_url, params = payload, files = {'source': img})
-
+    print(response.text)
     return json.loads(response.text)['image']['url'] 
 
 image_path = 'images/54c87dec3f6ffca05d225434c4f65897b02a5fff.jpg'

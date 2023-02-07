@@ -12,7 +12,7 @@ def summarize_text(text_to_summarize):
     model="text-davinci-003",
     prompt= prompt,
     temperature=0.0,
-    max_tokens=500,
+    max_tokens=300,
     top_p=1,
     frequency_penalty=0,
     presence_penalty=0
